@@ -1,15 +1,17 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 
+import WetonMain from "@/features/weton/components/wetonMain";
+
 const Home: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Next Starter</title>
-        <meta name="description" content="Next Starter" />
+        <title>Kalkulator Weton</title>
+        <meta name="description" content="Kalkulator Weton" />
       </Head>
-      <main className="flex min-h-screen items-center justify-center">
-        <h1 className="text-4xl font-bold">Next Starter</h1>
+      <main className="flex min-h-screen justify-center">
+        <WetonMain />
       </main>
     </>
   );
