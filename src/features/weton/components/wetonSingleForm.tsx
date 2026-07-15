@@ -19,10 +19,21 @@ export default function WetonSingleForm({ loading, onCalculateWeton }: Props) {
   // 8. State
   const [date, setDate] = useState("");
 
-  // 10. Computed / Derived
-  const isSubmitDisabled = !date || loading;
-
   // 11. Methods / Handlers
+  function isValidDate(value: string): boolean {
+    const match = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(value);
+
+    if (!match) return false;
+
+    const day = Number(match[1]);
+    const month = Number(match[2]);
+
+    return day >= 1 && day <= 31 && month >= 1 && month <= 12;
+  }
+
+  // 10. Computed / Derived
+  const isSubmitDisabled = !isValidDate(date) || loading;
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -38,10 +49,14 @@ export default function WetonSingleForm({ loading, onCalculateWeton }: Props) {
         <Label htmlFor="singleDate">Tanggal</Label>
         <Input
           id="singleDate"
-          type="date"
+          type="text"
+          inputMode="numeric"
+          placeholder="dd/mm/yyyy"
+          maxLength={10}
           value={date}
           onChange={(event) => setDate(event.target.value)}
         />
+        <p className="text-xs text-muted-foreground">Contoh: 29/07/2005 atau 29/7/2005</p>
       </div>
 
       <Button

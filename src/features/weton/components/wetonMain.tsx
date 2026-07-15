@@ -157,8 +157,7 @@ export default function WetonMain() {
 
     setSingleWeton((state) => ({ ...state, status: "loading" }));
 
-    const [year, month, day] = payload.date.split("-");
-    const data = getWetonFromString(`${day}/${month}/${year}`);
+    const data = getWetonFromString(payload.date);
 
     setSingleWeton({
       status: "success",
@@ -271,9 +270,8 @@ export default function WetonMain() {
 
     setMatchWeton((state) => ({ ...state, status: "loading" }));
 
-    const [year, month, day] = payload.targetDate.split("-");
     const data = getMatchWeton(
-      `${day}/${month}/${year}`,
+      payload.targetDate,
       payload.startYear,
       payload.endYear
     );

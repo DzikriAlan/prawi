@@ -21,10 +21,22 @@ export default function WetonMatchForm({ loading, onCalculateMatch }: Props) {
   const [startYear, setStartYear] = useState("");
   const [endYear, setEndYear] = useState("");
 
-  // 10. Computed / Derived
-  const isSubmitDisabled = !targetDate || !startYear || !endYear || loading;
-
   // 11. Methods / Handlers
+  function isValidDate(value: string): boolean {
+    const match = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(value);
+
+    if (!match) return false;
+
+    const day = Number(match[1]);
+    const month = Number(match[2]);
+
+    return day >= 1 && day <= 31 && month >= 1 && month <= 12;
+  }
+
+  // 10. Computed / Derived
+  const isSubmitDisabled =
+    !isValidDate(targetDate) || !startYear || !endYear || loading;
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -44,10 +56,14 @@ export default function WetonMatchForm({ loading, onCalculateMatch }: Props) {
         <Label htmlFor="targetDate">Tanggal Lahir</Label>
         <Input
           id="targetDate"
-          type="date"
+          type="text"
+          inputMode="numeric"
+          placeholder="dd/mm/yyyy"
+          maxLength={10}
           value={targetDate}
           onChange={(event) => setTargetDate(event.target.value)}
         />
+        <p className="text-xs text-muted-foreground">Contoh: 07/11/2004 atau 7/11/2004</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
