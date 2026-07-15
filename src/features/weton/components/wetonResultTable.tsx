@@ -14,9 +14,10 @@ import {
 // 7. Props
 interface Props {
   data: DataMatchWeton[];
+  onViewDetail: (result: string) => void;
 }
 
-export default function WetonResultTable({ data }: Props) {
+export default function WetonResultTable({ data, onViewDetail }: Props) {
   // 10. Computed / Derived
   const isEmpty = data.length === 0;
 
@@ -47,7 +48,15 @@ export default function WetonResultTable({ data }: Props) {
               <TableRow key={`${item.date}-${item.weton}`}>
                 <TableCell className="whitespace-nowrap">{item.date}</TableCell>
                 <TableCell className="whitespace-nowrap">{item.weton}</TableCell>
-                <TableCell className="whitespace-nowrap">{item.result}</TableCell>
+                <TableCell className="whitespace-nowrap">
+                  <button
+                    type="button"
+                    className="underline decoration-dotted underline-offset-4 hover:text-primary"
+                    onClick={() => onViewDetail(item.result)}
+                  >
+                    {item.result}
+                  </button>
+                </TableCell>
                 <TableCell className="whitespace-nowrap">{item.score}</TableCell>
               </TableRow>
             ))

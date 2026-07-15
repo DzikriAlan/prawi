@@ -7,9 +7,10 @@ import { Card, CardContent } from "@/components/ui/card";
 // 7. Props
 interface Props {
   data: DataMatchWeton[];
+  onViewDetail: (result: string) => void;
 }
 
-export default function WetonResultCardList({ data }: Props) {
+export default function WetonResultCardList({ data, onViewDetail }: Props) {
   // 10. Computed / Derived
   const isEmpty = data.length === 0;
 
@@ -37,7 +38,13 @@ export default function WetonResultCardList({ data }: Props) {
 
             <div className="flex items-center justify-between gap-2">
               <span className="text-muted-foreground">{item.weton}</span>
-              <span className="font-medium">{item.result}</span>
+              <button
+                type="button"
+                className="font-medium underline decoration-dotted underline-offset-4"
+                onClick={() => onViewDetail(item.result)}
+              >
+                {item.result}
+              </button>
             </div>
           </CardContent>
         </Card>

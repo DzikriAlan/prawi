@@ -17,6 +17,7 @@ import WetonResultCardList from "./wetonResultCardList";
 import WetonPagination from "./wetonPagination";
 import WetonMatchModal from "./wetonMatchModal";
 import WetonSingleModal from "./wetonSingleModal";
+import WetonResultDetailModal from "./wetonResultDetailModal";
 
 const DAYS = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
@@ -97,6 +98,8 @@ export default function WetonMain() {
 
   const [isMatchModalOpen, setIsMatchModalOpen] = useState(false);
   const [isSingleModalOpen, setIsSingleModalOpen] = useState(false);
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+  const [selectedResult, setSelectedResult] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
 
@@ -317,6 +320,15 @@ export default function WetonMain() {
     setIsSingleModalOpen(true);
   };
 
+  const handleViewDetail = (result: string) => {
+    setSelectedResult(result);
+    setIsDetailModalOpen(true);
+  };
+
+  const handleOpenChangeDetailModal = (open: boolean) => {
+    setIsDetailModalOpen(open);
+  };
+
   const handleOpenChangeSingleModal = (open: boolean) => {
     setIsSingleModalOpen(open);
 
@@ -354,8 +366,14 @@ export default function WetonMain() {
         onOpenSingleModal={handleOpenSingleModal}
       />
 
-      <WetonResultTable data={currentPageData} />
-      <WetonResultCardList data={currentPageData} />
+      <WetonResultTable
+        data={currentPageData}
+        onViewDetail={handleViewDetail}
+      />
+      <WetonResultCardList
+        data={currentPageData}
+        onViewDetail={handleViewDetail}
+      />
 
       {totalItems > 0 && (
         <WetonPagination
@@ -378,6 +396,12 @@ export default function WetonMain() {
         singleWeton={singleWeton}
         onOpenChange={handleOpenChangeSingleModal}
         onCalculateWeton={handleCalculateWeton}
+      />
+
+      <WetonResultDetailModal
+        open={isDetailModalOpen}
+        result={selectedResult}
+        onOpenChange={handleOpenChangeDetailModal}
       />
     </div>
   );
