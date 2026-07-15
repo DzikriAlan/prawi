@@ -1,5 +1,6 @@
 // 1. Import External Library
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Notyf } from "notyf";
 
 // 2. Import Types
 import type {
@@ -10,9 +11,12 @@ import type {
 } from "../types/wetonTypes";
 
 // Import Components
-import WetonMatchForm from "./wetonMatchForm";
-import WetonSingleForm from "./wetonSingleForm";
-import WetonResult from "./wetonResult";
+import WetonToolbar from "./wetonToolbar";
+import WetonResultTable from "./wetonResultTable";
+import WetonResultCardList from "./wetonResultCardList";
+import WetonPagination from "./wetonPagination";
+import WetonMatchModal from "./wetonMatchModal";
+import WetonSingleModal from "./wetonSingleModal";
 
 const DAYS = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
 
@@ -73,6 +77,8 @@ const SCORE: Record<string, number> = {
   Pegat: 40,
 };
 
+const DEFAULT_PAGE_SIZE = 10;
+
 export default function WetonMain() {
   // 8. State
   const [matchWeton, setMatchWeton] = useState<MatchWeton>({
@@ -88,6 +94,22 @@ export default function WetonMain() {
     statusSubtitle: "Silakan isi form cek weton.",
     data: null,
   });
+
+  const [isMatchModalOpen, setIsMatchModalOpen] = useState(false);
+  const [isSingleModalOpen, setIsSingleModalOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+
+  const notyfRef = useRef<Notyf | null>(null);
+
+  // 10. Computed / Derived
+  const matchWetonData = matchWeton.data ?? [];
+  const totalItems = matchWetonData.length;
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+  const currentPageData = matchWetonData.slice(
+    (page - 1) * pageSize,
+    (page - 1) * pageSize + pageSize
+  );
 
   // 11. Methods / Handlers
   const handleCalculateWeton = (payload: PayloadSingleWeton) => {
@@ -144,6 +166,8 @@ export default function WetonMain() {
       statusSubtitle: "Weton berhasil dihitung.",
       data,
     });
+
+    notyfRef.current?.success(`Weton: ${data.weton}`);
   };
 
   const handleCalculateMatch = (payload: PayloadMatchWeton) => {
@@ -263,10 +287,61 @@ export default function WetonMain() {
           : "Tidak ada weton cocok pada rentang tahun tersebut.",
       data,
     });
+
+    setPage(1);
+    setIsMatchModalOpen(false);
+
+    if (data.length > 0) {
+      notyfRef.current?.success(`Ditemukan ${data.length} weton cocok.`);
+    } else {
+      notyfRef.current?.error("Tidak ditemukan weton cocok pada rentang tahun tersebut.");
+    }
   };
 
+  const handleChangePageSize = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setPage(1);
+  };
+
+  const handleChangePage = (newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleOpenMatchModal = () => {
+    setIsMatchModalOpen(true);
+  };
+
+  const handleOpenChangeMatchModal = (open: boolean) => {
+    setIsMatchModalOpen(open);
+  };
+
+  const handleOpenSingleModal = () => {
+    setIsSingleModalOpen(true);
+  };
+
+  const handleOpenChangeSingleModal = (open: boolean) => {
+    setIsSingleModalOpen(open);
+
+    if (!open) {
+      setSingleWeton({
+        status: "empty",
+        statusTitle: "Belum ada hasil",
+        statusSubtitle: "Silakan isi form cek weton.",
+        data: null,
+      });
+    }
+  };
+
+  // 12. Effects
+  useEffect(() => {
+    notyfRef.current = new Notyf({
+      duration: 3000,
+      position: { x: "right", y: "top" },
+    });
+  }, []);
+
   return (
-    <div className="flex w-full flex-col gap-6 px-4 py-8 sm:px-6 md:mx-auto md:max-w-xl md:px-0 md:py-12">
+    <div className="flex w-full flex-col gap-6 px-4 py-8 sm:px-6 md:mx-auto md:max-w-3xl md:px-0 md:py-12">
       <div className="flex flex-col gap-1 text-center">
         <h1 className="text-2xl font-bold">Kalkulator Weton</h1>
         <p className="text-sm text-muted-foreground">
@@ -274,19 +349,37 @@ export default function WetonMain() {
         </p>
       </div>
 
-      <WetonMatchForm
+      <WetonToolbar
+        pageSize={pageSize}
+        onChangePageSize={handleChangePageSize}
+        onOpenMatchModal={handleOpenMatchModal}
+        onOpenSingleModal={handleOpenSingleModal}
+      />
+
+      <WetonResultTable data={currentPageData} />
+      <WetonResultCardList data={currentPageData} />
+
+      {totalItems > 0 && (
+        <WetonPagination
+          page={page}
+          totalPages={totalPages}
+          onChangePage={handleChangePage}
+        />
+      )}
+
+      <WetonMatchModal
+        open={isMatchModalOpen}
         loading={matchWeton.status === "loading"}
+        onOpenChange={handleOpenChangeMatchModal}
         onCalculateMatch={handleCalculateMatch}
       />
 
-      <WetonSingleForm
+      <WetonSingleModal
+        open={isSingleModalOpen}
         loading={singleWeton.status === "loading"}
-        onCalculateWeton={handleCalculateWeton}
-      />
-
-      <WetonResult
-        matchWeton={matchWeton}
         singleWeton={singleWeton}
+        onOpenChange={handleOpenChangeSingleModal}
+        onCalculateWeton={handleCalculateWeton}
       />
     </div>
   );
