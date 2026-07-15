@@ -19,6 +19,14 @@ export default function WetonSingleForm({ loading, onCalculateWeton }: Props) {
   // 8. State
   const [date, setDate] = useState("");
 
+  const [exampleDate] = useState(() => {
+    const day = Math.floor(Math.random() * 28) + 1;
+    const month = Math.floor(Math.random() * 12) + 1;
+    const year = Math.floor(Math.random() * 40) + 1970;
+
+    return `${day}/${month}/${year}`;
+  });
+
   // 11. Methods / Handlers
   function isValidDate(value: string): boolean {
     const match = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(value);
@@ -56,7 +64,7 @@ export default function WetonSingleForm({ loading, onCalculateWeton }: Props) {
           value={date}
           onChange={(event) => setDate(event.target.value)}
         />
-        <p className="text-xs text-muted-foreground">Contoh: 29/07/2005 atau 29/7/2005</p>
+        <p className="text-xs text-muted-foreground">Contoh: {exampleDate}</p>
       </div>
 
       <Button

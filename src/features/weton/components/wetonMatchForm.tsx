@@ -21,6 +21,14 @@ export default function WetonMatchForm({ loading, onCalculateMatch }: Props) {
   const [startYear, setStartYear] = useState("");
   const [endYear, setEndYear] = useState("");
 
+  const [exampleDate] = useState(() => {
+    const day = Math.floor(Math.random() * 28) + 1;
+    const month = Math.floor(Math.random() * 12) + 1;
+    const year = Math.floor(Math.random() * 40) + 1970;
+
+    return `${day}/${month}/${year}`;
+  });
+
   // 11. Methods / Handlers
   function isValidDate(value: string): boolean {
     const match = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(value);
@@ -63,7 +71,7 @@ export default function WetonMatchForm({ loading, onCalculateMatch }: Props) {
           value={targetDate}
           onChange={(event) => setTargetDate(event.target.value)}
         />
-        <p className="text-xs text-muted-foreground">Contoh: 07/11/2004 atau 7/11/2004</p>
+        <p className="text-xs text-muted-foreground">Contoh: {exampleDate}</p>
       </div>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
