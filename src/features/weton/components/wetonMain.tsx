@@ -102,14 +102,24 @@ export default function WetonMain() {
   const [selectedResult, setSelectedResult] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const notyfRef = useRef<Notyf | null>(null);
 
   // 10. Computed / Derived
   const matchWetonData = matchWeton.data ?? [];
-  const totalItems = matchWetonData.length;
+  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
+  const filteredMatchWetonData = normalizedSearchQuery
+    ? matchWetonData.filter((item) =>
+        `${item.date} ${item.weton} ${item.result}`
+          .toLowerCase()
+          .includes(normalizedSearchQuery)
+      )
+    : matchWetonData;
+  const hasSearchResult = matchWetonData.length > 0 && normalizedSearchQuery !== "";
+  const totalItems = filteredMatchWetonData.length;
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
-  const currentPageData = matchWetonData.slice(
+  const currentPageData = filteredMatchWetonData.slice(
     (page - 1) * pageSize,
     (page - 1) * pageSize + pageSize
   );
@@ -290,6 +300,7 @@ export default function WetonMain() {
     });
 
     setPage(1);
+    setSearchQuery("");
     setIsMatchModalOpen(false);
 
     if (data.length > 0) {
@@ -301,6 +312,11 @@ export default function WetonMain() {
 
   const handleChangePageSize = (newPageSize: number) => {
     setPageSize(newPageSize);
+    setPage(1);
+  };
+
+  const handleChangeSearchQuery = (newSearchQuery: string) => {
+    setSearchQuery(newSearchQuery);
     setPage(1);
   };
 
@@ -361,6 +377,8 @@ export default function WetonMain() {
 
       <WetonToolbar
         pageSize={pageSize}
+        searchQuery={searchQuery}
+        onChangeSearchQuery={handleChangeSearchQuery}
         onChangePageSize={handleChangePageSize}
         onOpenMatchModal={handleOpenMatchModal}
         onOpenSingleModal={handleOpenSingleModal}
@@ -368,10 +386,12 @@ export default function WetonMain() {
 
       <WetonResultTable
         data={currentPageData}
+        hasSearchResult={hasSearchResult}
         onViewDetail={handleViewDetail}
       />
       <WetonResultCardList
         data={currentPageData}
+        hasSearchResult={hasSearchResult}
         onViewDetail={handleViewDetail}
       />
 

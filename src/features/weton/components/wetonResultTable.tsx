@@ -14,12 +14,16 @@ import {
 // 7. Props
 interface Props {
   data: DataMatchWeton[];
+  hasSearchResult: boolean;
   onViewDetail: (result: string) => void;
 }
 
-export default function WetonResultTable({ data, onViewDetail }: Props) {
+export default function WetonResultTable({ data, hasSearchResult, onViewDetail }: Props) {
   // 10. Computed / Derived
   const isEmpty = data.length === 0;
+  const emptyMessage = hasSearchResult
+    ? "Tidak ada hasil yang cocok dengan pencarian."
+    : 'Belum ada hasil. Klik "Cari Weton Cocok" untuk memulai.';
 
   return (
     <div className="hidden overflow-x-auto rounded-md border md:block">
@@ -40,7 +44,7 @@ export default function WetonResultTable({ data, onViewDetail }: Props) {
                 colSpan={4}
                 className="text-center text-muted-foreground"
               >
-                Belum ada hasil. Klik &quot;Cari Weton Cocok&quot; untuk memulai.
+                {emptyMessage}
               </TableCell>
             </TableRow>
           ) : (

@@ -7,19 +7,23 @@ import { Card, CardContent } from "@/components/ui/card";
 // 7. Props
 interface Props {
   data: DataMatchWeton[];
+  hasSearchResult: boolean;
   onViewDetail: (result: string) => void;
 }
 
-export default function WetonResultCardList({ data, onViewDetail }: Props) {
+export default function WetonResultCardList({ data, hasSearchResult, onViewDetail }: Props) {
   // 10. Computed / Derived
   const isEmpty = data.length === 0;
+  const emptyMessage = hasSearchResult
+    ? "Tidak ada hasil yang cocok dengan pencarian."
+    : 'Belum ada hasil. Klik "Cari Weton Cocok" untuk memulai.';
 
   if (isEmpty) {
     return (
       <div className="md:hidden">
         <Card>
           <CardContent className="py-6 text-center text-sm text-muted-foreground">
-            Belum ada hasil. Klik &quot;Cari Weton Cocok&quot; untuk memulai.
+            {emptyMessage}
           </CardContent>
         </Card>
       </div>
