@@ -10,9 +10,9 @@ import type { DataStatusUpdate } from "../types/statusTypes";
 import { cn } from "@/shared/lib/utils";
 
 const QUICK_REACTIONS = ["😍", "😂", "😮"];
-const TRANSITION_DURATION_MS = 250;
+const TRANSITION_DURATION_MS = 220;
 const SWIPE_THRESHOLD_PX = 40;
-const WHEEL_GESTURE_IDLE_MS = 50;
+const WHEEL_GESTURE_IDLE_MS = 120;
 
 // 7. Props
 interface Props {
@@ -43,7 +43,7 @@ export default function StatusViewerModal({
   const currentIndexRef = useRef(0);
   const isAnimatingRef = useRef(false);
   const touchStartYRef = useRef(0);
-  const wheelGestureDirectionRef = useRef(0);
+  const isWheelGestureActiveRef = useRef(false);
   const wheelGestureTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // 11. Methods / Handlers
@@ -112,14 +112,18 @@ export default function StatusViewerModal({
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault();
 
-      wheelGestureDirectionRef.current = event.deltaY > 0 ? 1 : -1;
+      if (!isWheelGestureActiveRef.current) {
+        isWheelGestureActiveRef.current = true;
+        const direction = event.deltaY > 0 ? 1 : -1;
+        handleStepTo(currentIndexRef.current + direction);
+      }
 
       if (wheelGestureTimeoutRef.current) {
         clearTimeout(wheelGestureTimeoutRef.current);
       }
 
       wheelGestureTimeoutRef.current = setTimeout(() => {
-        handleStepTo(currentIndexRef.current + wheelGestureDirectionRef.current);
+        isWheelGestureActiveRef.current = false;
         wheelGestureTimeoutRef.current = null;
       }, WHEEL_GESTURE_IDLE_MS);
     };
