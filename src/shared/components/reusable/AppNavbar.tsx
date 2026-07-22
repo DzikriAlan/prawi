@@ -5,6 +5,7 @@ import { Notyf } from "notyf";
 import {
   Home,
   Calculator,
+  CircleDot,
   CircleUserRound,
   Search,
   Loader2,
@@ -17,6 +18,7 @@ import ProfileFormModal from "@/features/profile/components/profileFormModal";
 
 const NAV_ITEMS = [
   { href: "/", label: "Home", icon: Home },
+  { href: "/status", label: "Pembaruan", icon: CircleDot },
   { href: "/weton", label: "Kalkulator Weton", icon: Calculator },
 ];
 
