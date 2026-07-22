@@ -10,9 +10,9 @@ import type { DataStatusUpdate } from "../types/statusTypes";
 import { cn } from "@/shared/lib/utils";
 
 const QUICK_REACTIONS = ["😍", "😂", "😮"];
-const TRANSITION_DURATION_MS = 350;
+const TRANSITION_DURATION_MS = 250;
 const SWIPE_THRESHOLD_PX = 40;
-const WHEEL_GESTURE_IDLE_MS = 140;
+const WHEEL_GESTURE_IDLE_MS = 50;
 
 // 7. Props
 interface Props {
