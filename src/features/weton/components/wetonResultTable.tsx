@@ -32,6 +32,7 @@ export default function WetonResultTable({ data, hasSearchResult, onViewDetail }
           <TableRow>
             <TableHead>Tanggal</TableHead>
             <TableHead>Weton</TableHead>
+            <TableHead>Total Neptu</TableHead>
             <TableHead>Hasil</TableHead>
             <TableHead>Skor</TableHead>
           </TableRow>
@@ -41,7 +42,7 @@ export default function WetonResultTable({ data, hasSearchResult, onViewDetail }
           {isEmpty ? (
             <TableRow>
               <TableCell
-                colSpan={4}
+                colSpan={5}
                 className="text-center text-muted-foreground"
               >
                 {emptyMessage}
@@ -52,6 +53,7 @@ export default function WetonResultTable({ data, hasSearchResult, onViewDetail }
               <TableRow key={`${item.date}-${item.weton}`}>
                 <TableCell className="whitespace-nowrap">{item.date}</TableCell>
                 <TableCell className="whitespace-nowrap">{item.weton}</TableCell>
+                <TableCell className="whitespace-nowrap">{item.totalNeptu}</TableCell>
                 <TableCell className="whitespace-nowrap">
                   <button
                     type="button"

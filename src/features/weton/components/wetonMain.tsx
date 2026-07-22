@@ -245,7 +245,7 @@ export default function WetonMain() {
       const result: {
         date: string;
         weton: string;
-        neptu: number;
+        totalNeptu: number;
         result: string;
         score: number;
       }[] = [];
@@ -269,7 +269,7 @@ export default function WetonMain() {
               result.push({
                 date: `${weton.hari} ${day} ${MONTHS[month - 1]} ${year}`,
                 weton: weton.weton,
-                neptu,
+                totalNeptu: total,
                 result: primbon,
                 score,
               });

@@ -14,7 +14,7 @@ export interface PayloadSingleWeton {
 export interface DataMatchWeton {
   date: string;
   weton: string;
-  neptu: number;
+  totalNeptu: number;
   result: string;
   score: number;
 }

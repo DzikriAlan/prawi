@@ -2,21 +2,21 @@ import type { NextPage } from "next";
 import Head from "next/head";
 
 import { AppNavbar } from "@/shared/components/reusable/AppNavbar";
-import NetworkMain from "@/features/network/components/networkMain";
+import WetonMain from "@/features/weton/components/wetonMain";
 
-const Home: NextPage = () => {
+const Weton: NextPage = () => {
   return (
     <>
       <Head>
-        <title>Home</title>
-        <meta name="description" content="Orang yang mungkin Anda kenal" />
+        <title>Kalkulator Weton</title>
+        <meta name="description" content="Kalkulator Weton" />
       </Head>
       <AppNavbar />
       <main className="flex min-h-screen justify-center pb-24">
-        <NetworkMain />
+        <WetonMain />
       </main>
     </>
   );
 };
 
-export default Home;
+export default Weton;
