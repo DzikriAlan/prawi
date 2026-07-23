@@ -416,6 +416,7 @@ export default function ChatMain({ detailPanel }: Props) {
   // 9. Store / Controller
   const isExploreOpen = useExploreStore((state) => state.isExploreOpen);
   const setExploreOpen = useExploreStore((state) => state.setExploreOpen);
+  const setImmersive = useExploreStore((state) => state.setImmersive);
 
   const notyfRef = useRef<Notyf | null>(null);
   const replyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -648,6 +649,12 @@ export default function ChatMain({ detailPanel }: Props) {
 
   // 12. Effects
   useEffect(() => {
+    setImmersive(Boolean(activeConversationId) || isStatusViewerOpen);
+
+    return () => setImmersive(false);
+  }, [activeConversationId, isStatusViewerOpen, setImmersive]);
+
+  useEffect(() => {
     notyfRef.current = new Notyf({
       duration: 3000,
       position: { x: "right", y: "top" },
@@ -732,7 +739,7 @@ export default function ChatMain({ detailPanel }: Props) {
     <div className="flex h-full w-full">
       <div
         className={cn(
-          "h-full w-full md:block md:w-[380px] md:shrink-0 md:border-r",
+          "h-full w-full min-w-0 md:block md:w-[380px] md:shrink-0 md:border-r",
           isDetailPanelVisible ? "hidden" : "block"
         )}
       >
@@ -741,7 +748,7 @@ export default function ChatMain({ detailPanel }: Props) {
 
       <div
         className={cn(
-          "h-full flex-1 overflow-y-auto md:block",
+          "no-scrollbar h-full min-w-0 flex-1 overflow-y-auto md:block",
           isDetailPanelVisible ? "block" : "hidden"
         )}
       >
