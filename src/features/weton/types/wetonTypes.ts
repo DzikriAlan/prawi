@@ -10,6 +10,36 @@ export interface PayloadSingleWeton {
   date: string;
 }
 
+// Satu profil orang yang tampil pada mode pencarian orang
+export interface DataWetonPerson {
+  id: string;
+  name: string;
+  verified: boolean;
+  title: string;
+  coverUrl: string;
+  avatarUrl: string;
+  bio: string;
+  interests: string;
+  location: string;
+  birthDate: string;
+}
+
+// Satu topik yang sedang populer
+export interface DataWetonTopic {
+  id: string;
+  name: string;
+  postLabel: string;
+  trend: number[];
+}
+
+// Satu grup yang bisa diikuti
+export interface DataWetonGroup {
+  id: string;
+  name: string;
+  memberLabel: string;
+  isJoined: boolean;
+}
+
 // Satu baris hasil pencarian weton yang cocok
 export interface DataMatchWeton {
   date: string;

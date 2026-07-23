@@ -7,7 +7,7 @@ import { cn } from "@/shared/lib/utils";
 import ChatMain from "@/features/chat/components/chatMain";
 import WetonMain from "@/features/weton/components/wetonMain";
 
-const Home: NextPage = () => {
+const Chat: NextPage = () => {
   // 9. Store / Controller
   const isImmersive = useExploreStore((state) => state.isImmersive);
 
@@ -15,7 +15,7 @@ const Home: NextPage = () => {
     <>
       <Head>
         <title>Obrolan</title>
-        <meta name="description" content="Percakapan, status, dan jelajah orang" />
+        <meta name="description" content="Percakapan dan riwayat obrolan" />
       </Head>
       <AppNavigation />
       <main
@@ -30,4 +30,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Chat;

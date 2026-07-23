@@ -39,22 +39,22 @@ src/shared/
 
 ## Function Naming Rules
 
-| Prefix      | Service | Controller | emit | UI Component | Utilisasi (inner function) |
-| ----------- | :-----: | :--------: | :--: | :----------: | :------------------------: |
-| `get`       |   ✅    |     ❌     |  ❌  |      ❌      |             ✅              |
-| `post`      |   ✅    |     ❌     |  ❌  |      ❌      |             ✅              |
-| `update`    |   ✅    |     ❌     |  ❌  |      ❌      |             ✅              |
-| `patch`     |   ✅    |     ❌     |  ❌  |      ❌      |             ✅              |
-| `delete`    |   ✅    |     ❌     |  ❌  |      ❌      |             ✅              |
-| `fetch`     |   ❌    |     ✅     |  ❌  |      ❌      |             ❌              |
-| `store`     |   ❌    |     ✅     |  ❌  |      ❌      |             ❌              |
-| `remove`    |   ❌    |     ✅     |  ❌  |      ❌      |             ❌              |
-| `load`      |   ❌    |     ❌     |  ✅  |      ✅      |             ❌              |
-| `save`      |   ❌    |     ❌     |  ✅  |      ✅      |             ❌              |
-| `modify`    |   ❌    |     ✅     |  ✅  |      ✅      |             ❌              |
-| `destroy`   |   ❌    |     ❌     |  ✅  |      ✅      |             ❌              |
+| Prefix    | Service  | Controller | emit | UI Component | Utilisasi (inner function) |
+| --------- | :-----:  | :--------: | :--: | :----------: | :------------------------: |
+| `get`     |    ✅    |      ❌     |   ❌  |       ❌      |              ✅             |
+| `post`    |    ✅    |      ❌     |   ❌  |       ❌      |              ✅             |
+| `update`  |    ✅    |      ❌     |   ❌  |       ❌      |              ✅             |
+| `patch`   |    ✅    |      ❌     |   ❌  |       ❌      |              ✅             |
+| `delete`  |    ✅    |      ❌     |   ❌  |       ❌      |              ✅             |
+| `fetch`   |    ❌    |      ✅     |   ❌  |       ❌      |              ❌             |
+| `store`   |    ❌    |      ✅     |   ❌  |       ❌      |              ❌             |
+| `remove`  |    ❌    |      ✅     |   ❌  |       ❌      |              ❌             |
+| `read`    |    ❌    |      ❌     |   ✅  |       ✅      |              ❌             |
+| `create`  |    ❌    |      ❌     |   ✅  |       ✅      |              ❌             |
+| `edit`    |    ❌    |      ❌     |   ✅  |       ✅      |              ❌             |
+| `clear`   |    ❌    |      ❌     |   ✅  |       ✅      |              ❌             |
 
----
+
 
 ## Penamaan Folder & File
 
@@ -262,38 +262,30 @@ export const use{Filename}Controllers = () => {
 Urutan penulisan wajib mengikuti struktur berikut:
 
 ```tsx
-// 1. Import External Library
+// Import External Library (dont write commentar)
 import { useState } from 'react'
-
-// 2. Import Types
+// Import Type (dont write commentar)s
 import type { DataUsersProfile } from './types/usersTypes'
-
-// 4. Import States / Stores
+// Import States / Store (dont write commentar)s
 import { useUsersStates } from './states/usersStates'
-
-// 5. Import Controllers
+// Import Controller (dont write commentar)s
 import { useUsersControllers } from './controllers/usersControllers'
-
-// 7. Props
+// Props
 interface Props {
   userId: string
 }
 
 export default function UsersList({ userId }: Props) {
-  // 8. State
+  // Stat (dont write commentar)e
   const [loading, setLoading] = useState(false)
-
-  // 9. Store / Controller
+  // Store / Controlle (dont write commentar)r
   const { usersProfile } = useUsersStates()
   const { fetchUsersProfile } = useUsersControllers()
-
-  // 10. Computed / Derived
+  // Computed / Derive (dont write commentar)d
   const isEmptyData = !usersProfile.data
-
-  // 11. Methods / Handlers
+  // Methods / Handler (dont write commentar)s
   const handleSubmit = () => {}
-
-  // 12. Effects
+  // Effects
   useEffect(() => {}, [])
 
   return (

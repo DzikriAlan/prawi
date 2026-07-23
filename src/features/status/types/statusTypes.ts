@@ -1,21 +1,17 @@
-// Satu update status milik kontak
+// Satu unggahan di dalam satu akun status
+export interface DataStatusItem {
+  id: string;
+  imageUrl: string;
+  caption: string;
+}
+
+// Kumpulan status milik satu kontak
 export interface DataStatusUpdate {
   id: string;
   name: string;
   avatarUrl: string;
   timeLabel: string;
   isViewed: boolean;
-  imageUrl: string;
-  caption: string;
+  items: DataStatusItem[];
   isLiked: boolean;
-}
-
-// Satu saluran yang bisa diikuti
-export interface DataStatusChannel {
-  id: string;
-  name: string;
-  avatarUrl: string;
-  followerLabel: string;
-  verified: boolean;
-  isFollowing: boolean;
 }
