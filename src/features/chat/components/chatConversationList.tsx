@@ -59,7 +59,7 @@ export default function ChatConversationList({
 
   return (
     <div className="no-scrollbar flex h-full w-full flex-col overflow-y-auto bg-background">
-      <div className="flex items-center justify-between px-4 pb-4 pt-6 sm:px-5">
+      <div className="flex shrink-0 items-center justify-between px-4 pb-4 pt-6 sm:px-5">
         <h1
           title={unreadLabel}
           className="text-[22px] font-bold leading-none tracking-tight text-foreground"
@@ -88,7 +88,7 @@ export default function ChatConversationList({
         </div>
       </div>
 
-      <div className="px-4 pb-5 sm:px-5">
+      <div className="shrink-0 px-4 pb-5 sm:px-5">
         <div className="flex h-11 items-center gap-2.5 rounded-full border bg-background px-4">
           <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
 
@@ -117,7 +117,7 @@ export default function ChatConversationList({
         onOpenStory={onOpenStory}
       />
 
-      <div className="flex flex-col divide-y border-t pb-28 md:pb-4">
+      <div className="flex shrink-0 flex-col divide-y border-t pb-4">
         {conversations.map((conversation) => (
           <ChatConversationRow
             key={conversation.id}

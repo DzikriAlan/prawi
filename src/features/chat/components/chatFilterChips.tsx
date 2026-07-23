@@ -33,7 +33,7 @@ export default function ChatFilterChips({
   onCreateLabel,
 }: Props) {
   return (
-    <div className="no-scrollbar flex items-center gap-2 overflow-x-auto px-4 pb-4 sm:px-5">
+    <div className="no-scrollbar flex shrink-0 items-center gap-2 overflow-x-auto px-4 pb-4 sm:px-5">
       {CHAT_FILTERS.map((filter) => {
         const isActive = !activeLabelId && activeFilterId === filter.id;
 

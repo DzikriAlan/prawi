@@ -21,7 +21,7 @@ export default function ChatStoryRail({
   onOpenStory,
 }: Props) {
   return (
-    <div className="no-scrollbar flex items-start gap-4 overflow-x-auto px-4 pb-5 pt-1 sm:gap-5 sm:px-5">
+    <div className="no-scrollbar flex shrink-0 items-start gap-4 overflow-x-auto px-4 pb-5 pt-1 sm:gap-5 sm:px-5">
       <button
         type="button"
         onClick={onCreateStory}

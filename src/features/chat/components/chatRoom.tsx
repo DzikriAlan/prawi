@@ -84,12 +84,12 @@ export default function ChatRoom({
 
   return (
     <div className="flex h-full w-full flex-col bg-background">
-      <div className="flex items-center gap-3 border-b border-border px-4 py-3.5">
+      <div className="flex shrink-0 items-center gap-2 border-b border-border px-3 py-3.5 sm:gap-3 sm:px-4">
         <button
           type="button"
           onClick={onCloseConversation}
           aria-label="Kembali"
-          className="flex h-9 w-9 items-center justify-center rounded-full md:hidden text-foreground transition-colors hover:bg-muted"
+          className="-ml-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full md:hidden text-foreground transition-colors hover:bg-muted"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
@@ -134,7 +134,7 @@ export default function ChatRoom({
         </button>
       </div>
 
-      <div className="no-scrollbar flex flex-1 flex-col gap-3 overflow-y-auto px-4 py-5">
+      <div className="no-scrollbar flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-4 py-5">
         {messageGroups.map((group) => (
           <div key={group.dayLabel} className="flex flex-col gap-2">
             <div className="flex justify-center">
@@ -170,23 +170,23 @@ export default function ChatRoom({
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="flex items-center gap-2.5 border-t border-border bg-background px-4 pb-24 pt-3.5 md:pb-4">
+      <div className="flex shrink-0 items-center gap-2 border-t border-border bg-background px-3 pb-4 pt-3.5 sm:gap-2.5 sm:px-4">
         <button
           type="button"
           aria-label="Kirim foto"
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-primary text-white transition-opacity hover:opacity-90"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-white transition-opacity hover:opacity-90 sm:h-11 sm:w-11"
         >
           <Camera className="h-5 w-5" />
         </button>
 
-        <div className="flex h-11 flex-1 items-center gap-2 rounded-full border border-border bg-background px-4">
+        <div className="flex h-11 min-w-0 flex-1 items-center gap-1 rounded-full border border-border bg-background px-3 sm:gap-2 sm:px-4">
           <input
             type="text"
             value={draftMessage}
             placeholder="Ketik pesan..."
             onChange={(event) => setDraftMessage(event.target.value)}
             onKeyDown={handleDraftKeyDown}
-            className="h-full flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+            className="h-full min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
           />
 
           <button
@@ -212,7 +212,7 @@ export default function ChatRoom({
           disabled={isSendDisabled}
           aria-label="Kirim pesan"
           className={cn(
-            "flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white transition-all",
+            "flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-white transition-all sm:h-11 sm:w-11",
             isSendDisabled
               ? "bg-primary/30"
               : "bg-primary shadow-lg shadow-primary/25 hover:opacity-90"
