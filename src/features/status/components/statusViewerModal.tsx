@@ -12,7 +12,7 @@ import { cn } from "@/shared/lib/utils";
 const QUICK_REACTIONS = ["😍", "😂", "😮"];
 const TRANSITION_DURATION_MS = 220;
 const SWIPE_THRESHOLD_PX = 40;
-const WHEEL_GESTURE_IDLE_MS = 120;
+const WHEEL_GESTURE_IDLE_MS = 90;
 
 // 7. Props
 interface Props {
@@ -40,11 +40,17 @@ export default function StatusViewerModal({
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
   const currentIndexRef = useRef(0);
   const isAnimatingRef = useRef(false);
-  const touchStartYRef = useRef(0);
-  const isWheelGestureActiveRef = useRef(false);
+  const dragStartYRef = useRef(0);
+  const dragOffsetRef = useRef(0);
+  const isDraggingRef = useRef(false);
   const wheelGestureTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // 10. Computed / Derived
+  const getTrackTransform = (index: number, offsetPx = 0) =>
+    `translateY(calc(-${index * 100}vh + ${offsetPx}px))`;
 
   // 11. Methods / Handlers
   const handleToggleLike = (statusId: string) => {
@@ -62,7 +68,16 @@ export default function StatusViewerModal({
   const handleStepTo = (nextIndex: number) => {
     const clampedIndex = Math.max(0, Math.min(nextIndex, statuses.length - 1));
 
-    if (clampedIndex === currentIndexRef.current || isAnimatingRef.current) return;
+    if (trackRef.current) {
+      trackRef.current.style.transition = `transform ${TRANSITION_DURATION_MS}ms ease-out`;
+    }
+
+    if (clampedIndex === currentIndexRef.current || isAnimatingRef.current) {
+      if (trackRef.current) {
+        trackRef.current.style.transform = getTrackTransform(currentIndexRef.current);
+      }
+      return;
+    }
 
     isAnimatingRef.current = true;
     currentIndexRef.current = clampedIndex;
@@ -71,6 +86,15 @@ export default function StatusViewerModal({
     setTimeout(() => {
       isAnimatingRef.current = false;
     }, TRANSITION_DURATION_MS);
+  };
+
+  const handleResolveDrag = (netDeltaPx: number) => {
+    dragOffsetRef.current = 0;
+
+    const direction = netDeltaPx > 0 ? 1 : -1;
+    const hasPassedThreshold = Math.abs(netDeltaPx) >= SWIPE_THRESHOLD_PX;
+
+    handleStepTo(currentIndexRef.current + (hasPassedThreshold ? direction : 0));
   };
 
   // 12. Effects
@@ -112,10 +136,25 @@ export default function StatusViewerModal({
     const handleWheel = (event: WheelEvent) => {
       event.preventDefault();
 
-      if (!isWheelGestureActiveRef.current) {
-        isWheelGestureActiveRef.current = true;
-        const direction = event.deltaY > 0 ? 1 : -1;
-        handleStepTo(currentIndexRef.current + direction);
+      if (!isDraggingRef.current) {
+        if (isAnimatingRef.current) return;
+
+        isDraggingRef.current = true;
+        dragOffsetRef.current = 0;
+        if (trackRef.current) trackRef.current.style.transition = "none";
+      }
+
+      const maxOffsetPx = window.innerHeight;
+      dragOffsetRef.current = Math.max(
+        -maxOffsetPx,
+        Math.min(maxOffsetPx, dragOffsetRef.current - event.deltaY)
+      );
+
+      if (trackRef.current) {
+        trackRef.current.style.transform = getTrackTransform(
+          currentIndexRef.current,
+          dragOffsetRef.current
+        );
       }
 
       if (wheelGestureTimeoutRef.current) {
@@ -123,37 +162,57 @@ export default function StatusViewerModal({
       }
 
       wheelGestureTimeoutRef.current = setTimeout(() => {
-        isWheelGestureActiveRef.current = false;
+        isDraggingRef.current = false;
         wheelGestureTimeoutRef.current = null;
+        handleResolveDrag(-dragOffsetRef.current);
       }, WHEEL_GESTURE_IDLE_MS);
     };
 
-    const handleTouchStart = (event: TouchEvent) => {
-      touchStartYRef.current = event.touches[0].clientY;
+    const handlePointerDown = (event: PointerEvent) => {
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+      if (event.target instanceof Element && event.target.closest("button")) return;
+      if (isAnimatingRef.current) return;
+
+      isDraggingRef.current = true;
+      dragStartYRef.current = event.clientY;
+      dragOffsetRef.current = 0;
+
+      if (trackRef.current) trackRef.current.style.transition = "none";
     };
 
-    const handleTouchMove = (event: TouchEvent) => {
+    const handlePointerMove = (event: PointerEvent) => {
+      if (!isDraggingRef.current) return;
       event.preventDefault();
+
+      dragOffsetRef.current = event.clientY - dragStartYRef.current;
+
+      if (trackRef.current) {
+        trackRef.current.style.transform = getTrackTransform(
+          currentIndexRef.current,
+          dragOffsetRef.current
+        );
+      }
     };
 
-    const handleTouchEnd = (event: TouchEvent) => {
-      const deltaY = touchStartYRef.current - event.changedTouches[0].clientY;
-      if (Math.abs(deltaY) < SWIPE_THRESHOLD_PX) return;
+    const handlePointerUp = () => {
+      if (!isDraggingRef.current) return;
+      isDraggingRef.current = false;
 
-      const direction = deltaY > 0 ? 1 : -1;
-      handleStepTo(currentIndexRef.current + direction);
+      handleResolveDrag(-dragOffsetRef.current);
     };
 
     container.addEventListener("wheel", handleWheel, { passive: false });
-    container.addEventListener("touchstart", handleTouchStart, { passive: true });
-    container.addEventListener("touchmove", handleTouchMove, { passive: false });
-    container.addEventListener("touchend", handleTouchEnd);
+    container.addEventListener("pointerdown", handlePointerDown);
+    container.addEventListener("pointermove", handlePointerMove, { passive: false });
+    container.addEventListener("pointerup", handlePointerUp);
+    container.addEventListener("pointercancel", handlePointerUp);
 
     return () => {
       container.removeEventListener("wheel", handleWheel);
-      container.removeEventListener("touchstart", handleTouchStart);
-      container.removeEventListener("touchmove", handleTouchMove);
-      container.removeEventListener("touchend", handleTouchEnd);
+      container.removeEventListener("pointerdown", handlePointerDown);
+      container.removeEventListener("pointermove", handlePointerMove);
+      container.removeEventListener("pointerup", handlePointerUp);
+      container.removeEventListener("pointercancel", handlePointerUp);
 
       if (wheelGestureTimeoutRef.current) {
         clearTimeout(wheelGestureTimeoutRef.current);
@@ -171,9 +230,10 @@ export default function StatusViewerModal({
         className="h-full touch-none"
       >
         <div
+          ref={trackRef}
           className="flex flex-col"
           style={{
-            transform: `translateY(-${currentIndex * 100}vh)`,
+            transform: getTrackTransform(currentIndex),
             transition: `transform ${TRANSITION_DURATION_MS}ms ease-out`,
           }}
         >
