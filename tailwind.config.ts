@@ -52,6 +52,14 @@ const config: Config = {
   				800: '#4F4FBF',
   				900: '#0A0A23',
   			},
+  			chat: {
+  				primary: '#7C3AED',
+  				accent: '#EC4899',
+  				bubble: '#3B82F6',
+  				online: '#14B8A6',
+  				ink: '#0F172A',
+  				surface: '#F1F5F9',
+  			},
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
