@@ -14,7 +14,7 @@ interface Props {
 export default function WetonPersonCard({ person, onGreetPerson }: Props) {
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border bg-background">
-      <div className="relative h-16 w-full bg-muted">
+      <div className="relative h-14 w-full bg-muted sm:h-16">
         <Image
           src={person.coverUrl}
           alt=""
@@ -24,25 +24,25 @@ export default function WetonPersonCard({ person, onGreetPerson }: Props) {
         />
       </div>
 
-      <div className="flex flex-col items-center gap-1.5 px-3 pb-3.5 text-center">
-        <div className="relative -mt-7 h-14 w-14 shrink-0 overflow-hidden rounded-full border-4 border-background">
+      <div className="flex flex-col items-center gap-1.5 px-2.5 pb-3 text-center sm:px-3 sm:pb-3.5">
+        <div className="relative -mt-6 h-12 w-12 shrink-0 overflow-hidden rounded-full border-4 border-background sm:-mt-7 sm:h-14 sm:w-14">
           <Image
             src={person.avatarUrl}
             alt={person.name}
             fill
-            sizes="56px"
+            sizes="(max-width: 640px) 48px, 56px"
             className="object-cover"
           />
         </div>
 
         <div className="flex w-full min-w-0 flex-col items-center gap-0.5">
           <div className="flex max-w-full items-center justify-center gap-1.5">
-            <span className="truncate text-[13px] font-semibold text-foreground">
+            <span className="truncate text-xs font-semibold text-foreground sm:text-[13px]">
               {person.name}
             </span>
 
             {person.verified && (
-              <BadgeCheck className="h-4 w-4 shrink-0 text-primary" />
+              <BadgeCheck className="h-3.5 w-3.5 shrink-0 text-primary sm:h-4 sm:w-4" />
             )}
           </div>
 

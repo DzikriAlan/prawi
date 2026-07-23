@@ -65,11 +65,20 @@
   }
   body {
     @apply bg-background text-foreground;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+  }
+
+  button,
+  a {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
 @layer utilities {
   .no-scrollbar {
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     -ms-overflow-style: none;
     scrollbar-width: none;
   }

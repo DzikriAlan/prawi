@@ -628,8 +628,8 @@ export default function WetonMain() {
 
   return (
     <div className="flex h-full w-full bg-background">
-      <div className="no-scrollbar flex h-full min-w-0 flex-1 flex-col overflow-y-auto">
-        <div className="flex flex-col gap-4 px-4 pb-4 pt-6 sm:px-5">
+      <div className="no-scrollbar flex h-full min-w-0 flex-1 flex-col overflow-y-auto overscroll-contain">
+        <div className="flex shrink-0 flex-col gap-4 px-4 pb-4 pt-6 sm:px-5">
           <div className="flex items-start gap-2">
             <button
               type="button"
@@ -743,7 +743,7 @@ export default function WetonMain() {
       </div>
 
       {isPeopleMode && (
-        <div className="grid grid-cols-1 gap-3 px-4 pb-28 sm:grid-cols-2 sm:px-5 md:pb-8 xl:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 px-4 pb-8 sm:px-5 xl:grid-cols-3">
           {wetonPeople.map((person) => (
             <WetonPersonCard
               key={person.id}
@@ -761,7 +761,7 @@ export default function WetonMain() {
       )}
 
       {!isPeopleMode && (
-        <div className="grid grid-cols-1 gap-3 px-4 pb-28 sm:grid-cols-2 sm:px-5 md:pb-8 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-3 px-4 pb-8 sm:grid-cols-2 sm:px-5 xl:grid-cols-3">
           {currentPageData.map((item) => (
             <WetonMatchCard
               key={`${item.date}-${item.weton}`}
