@@ -11,8 +11,7 @@ import { cn } from "@/shared/lib/utils";
 
 const QUICK_REACTIONS = ["😍", "😂", "😮"];
 const TRANSITION_DURATION_MS = 220;
-const SWIPE_THRESHOLD_PX = 40;
-const WHEEL_GESTURE_IDLE_MS = 90;
+const WHEEL_GESTURE_IDLE_MS = 180;
 
 // 7. Props
 interface Props {
@@ -46,6 +45,7 @@ export default function StatusViewerModal({
   const dragStartYRef = useRef(0);
   const dragOffsetRef = useRef(0);
   const isDraggingRef = useRef(false);
+  const pendingStepDirectionRef = useRef<number | null>(null);
   const wheelGestureTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // 10. Computed / Derived
@@ -68,16 +68,25 @@ export default function StatusViewerModal({
   const handleStepTo = (nextIndex: number) => {
     const clampedIndex = Math.max(0, Math.min(nextIndex, statuses.length - 1));
 
-    if (trackRef.current) {
-      trackRef.current.style.transition = `transform ${TRANSITION_DURATION_MS}ms ease-out`;
-    }
+    if (isAnimatingRef.current) {
+      if (clampedIndex !== currentIndexRef.current) {
+        pendingStepDirectionRef.current = clampedIndex > currentIndexRef.current ? 1 : -1;
+      }
 
-    if (clampedIndex === currentIndexRef.current || isAnimatingRef.current) {
       if (trackRef.current) {
+        trackRef.current.style.transition = `transform ${TRANSITION_DURATION_MS}ms ease-out`;
         trackRef.current.style.transform = getTrackTransform(currentIndexRef.current);
       }
+
       return;
     }
+
+    if (trackRef.current) {
+      trackRef.current.style.transition = `transform ${TRANSITION_DURATION_MS}ms ease-out`;
+      trackRef.current.style.transform = getTrackTransform(clampedIndex);
+    }
+
+    if (clampedIndex === currentIndexRef.current) return;
 
     isAnimatingRef.current = true;
     currentIndexRef.current = clampedIndex;
@@ -85,6 +94,13 @@ export default function StatusViewerModal({
 
     setTimeout(() => {
       isAnimatingRef.current = false;
+
+      const pendingDirection = pendingStepDirectionRef.current;
+      pendingStepDirectionRef.current = null;
+
+      if (pendingDirection !== null) {
+        handleStepTo(currentIndexRef.current + pendingDirection);
+      }
     }, TRANSITION_DURATION_MS);
   };
 
@@ -92,9 +108,9 @@ export default function StatusViewerModal({
     dragOffsetRef.current = 0;
 
     const direction = netDeltaPx > 0 ? 1 : -1;
-    const hasPassedThreshold = Math.abs(netDeltaPx) >= SWIPE_THRESHOLD_PX;
+    const hasMoreThanHalfVisible = Math.abs(netDeltaPx) > window.innerHeight / 2;
 
-    handleStepTo(currentIndexRef.current + (hasPassedThreshold ? direction : 0));
+    handleStepTo(currentIndexRef.current + (hasMoreThanHalfVisible ? direction : 0));
   };
 
   // 12. Effects
@@ -137,8 +153,6 @@ export default function StatusViewerModal({
       event.preventDefault();
 
       if (!isDraggingRef.current) {
-        if (isAnimatingRef.current) return;
-
         isDraggingRef.current = true;
         dragOffsetRef.current = 0;
         if (trackRef.current) trackRef.current.style.transition = "none";
@@ -171,7 +185,6 @@ export default function StatusViewerModal({
     const handlePointerDown = (event: PointerEvent) => {
       if (event.pointerType === "mouse" && event.button !== 0) return;
       if (event.target instanceof Element && event.target.closest("button")) return;
-      if (isAnimatingRef.current) return;
 
       isDraggingRef.current = true;
       dragStartYRef.current = event.clientY;
