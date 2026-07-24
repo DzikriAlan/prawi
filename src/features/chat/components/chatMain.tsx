@@ -24,6 +24,7 @@ import ChatRoom from "./chatRoom";
 import ChatFriendSuggestionPanel from "./chatFriendSuggestionPanel";
 import ChatFriendActivityPanel from "./chatFriendActivityPanel";
 import StatusViewerModal from "@/features/status/components/statusViewerModal";
+import ContactMain from "@/features/contact/components/contactMain";
 
 const REPLY_DELAY_MS = 1200;
 
@@ -407,19 +408,27 @@ export default function ChatMain({ detailPanel }: Props) {
   const [searchKeyword, setSearchKeyword] = useState("");
   const [activeFilterId, setActiveFilterId] = useState<ChatFilterId>("all");
   const [statuses, setStatuses] = useState<DataStatusUpdate[]>(ALL_STATUSES);
+  const [scopedStatuses, setScopedStatuses] = useState<DataStatusUpdate[] | null>(
+    null
+  );
   const [activeStatusId, setActiveStatusId] = useState<string | null>(null);
   const [isStatusViewerOpen, setIsStatusViewerOpen] = useState(false);
   const [friendSuggestions, setFriendSuggestions] =
     useState<DataChatFriendSuggestion[]>(FRIEND_SUGGESTIONS);
   const [activeLabelId, setActiveLabelId] = useState<string | null>(null);
+  const [isNewChatOpen, setIsNewChatOpen] = useState(false);
 
   // 9. Store / Controller
   const isExploreOpen = useExploreStore((state) => state.isExploreOpen);
   const setExploreOpen = useExploreStore((state) => state.setExploreOpen);
   const setImmersive = useExploreStore((state) => state.setImmersive);
+  const statusFeedRequestToken = useExploreStore(
+    (state) => state.statusFeedRequestToken
+  );
 
   const notyfRef = useRef<Notyf | null>(null);
   const replyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastStatusTokenRef = useRef(statusFeedRequestToken);
 
   // 10. Computed / Derived
   const activeConversation =
@@ -446,7 +455,8 @@ export default function ChatMain({ detailPanel }: Props) {
   const isDetailPanelVisible =
     (isExploreOpen && Boolean(detailPanel)) ||
     Boolean(activeConversation) ||
-    isStatusViewerOpen;
+    isStatusViewerOpen ||
+    isNewChatOpen;
   const onlineFriends = conversations.filter((conversation) => conversation.isOnline);
 
   // 11. Methods / Handlers
@@ -494,6 +504,7 @@ export default function ChatMain({ detailPanel }: Props) {
   const handleOpenConversation = (conversationId: string) => {
     setActiveConversationId(conversationId);
     setIsStatusViewerOpen(false);
+    setIsNewChatOpen(false);
     setExploreOpen(false);
     setConversations((state) =>
       state.map((conversation) =>
@@ -579,11 +590,39 @@ export default function ChatMain({ detailPanel }: Props) {
   };
 
   const handleStartNewChat = () => {
-    notyfRef.current?.success("Fitur pesan baru belum tersedia.");
+    setActiveConversationId(null);
+    setIsStatusViewerOpen(false);
+    setExploreOpen(false);
+    setIsNewChatOpen(true);
+  };
+
+  const handleCloseNewChat = () => {
+    setIsNewChatOpen(false);
   };
 
   const handleOpenStory = (statusId: string) => {
+    setScopedStatuses(null);
     setActiveStatusId(statusId);
+    setActiveConversationId(null);
+    setIsNewChatOpen(false);
+    setExploreOpen(false);
+    setIsStatusViewerOpen(true);
+  };
+
+  const handleOpenStatusFeed = () => {
+    const firstStatusId = ALL_STATUSES[0]?.id ?? null;
+    if (!firstStatusId) return;
+    handleOpenStory(firstStatusId);
+  };
+
+  const handleOpenProfileStatus = (
+    profileStatuses: DataStatusUpdate[],
+    activeProfileStatusId: string
+  ) => {
+    if (profileStatuses.length === 0) return;
+
+    setScopedStatuses(profileStatuses);
+    setActiveStatusId(activeProfileStatusId);
     setActiveConversationId(null);
     setExploreOpen(false);
     setIsStatusViewerOpen(true);
@@ -591,6 +630,7 @@ export default function ChatMain({ detailPanel }: Props) {
 
   const handleCloseStatusViewer = () => {
     setIsStatusViewerOpen(false);
+    setScopedStatuses(null);
   };
 
   const handleViewStatus = (statusId: string) => {
@@ -649,10 +689,25 @@ export default function ChatMain({ detailPanel }: Props) {
 
   // 12. Effects
   useEffect(() => {
-    setImmersive(Boolean(activeConversationId) || isStatusViewerOpen);
+    setImmersive(
+      Boolean(activeConversationId) || isStatusViewerOpen || isNewChatOpen
+    );
 
     return () => setImmersive(false);
-  }, [activeConversationId, isStatusViewerOpen, setImmersive]);
+  }, [activeConversationId, isStatusViewerOpen, isNewChatOpen, setImmersive]);
+
+  useEffect(() => {
+    if (isExploreOpen) setIsNewChatOpen(false);
+  }, [isExploreOpen]);
+
+  useEffect(() => {
+    if (statusFeedRequestToken === lastStatusTokenRef.current) return;
+
+    lastStatusTokenRef.current = statusFeedRequestToken;
+    setIsNewChatOpen(false);
+    handleOpenStatusFeed();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statusFeedRequestToken]);
 
   useEffect(() => {
     notyfRef.current = new Notyf({
@@ -687,11 +742,26 @@ export default function ChatMain({ detailPanel }: Props) {
     />
   );
 
+  const friendSidePanel = (
+    <div className="no-scrollbar hidden w-[320px] shrink-0 flex-col gap-4 overflow-y-auto xl:flex">
+      <ChatFriendSuggestionPanel
+        suggestions={friendSuggestions}
+        onToggleAddFriend={handleToggleAddFriend}
+        onShowAllSuggestions={handleShowAllSuggestions}
+      />
+
+      <ChatFriendActivityPanel
+        friends={onlineFriends}
+        onOpenConversation={handleOpenConversation}
+      />
+    </div>
+  );
+
   const statusPanel = (
     <div className="flex h-full w-full gap-4 bg-muted/40 p-0 xl:p-4">
       <div className="mx-auto h-full w-full max-w-[520px] overflow-hidden xl:rounded-2xl">
         <StatusViewerModal
-          statuses={statuses}
+          statuses={scopedStatuses ?? statuses}
           activeStatusId={activeStatusId}
           open={isStatusViewerOpen}
           onClose={handleCloseStatusViewer}
@@ -702,18 +772,7 @@ export default function ChatMain({ detailPanel }: Props) {
         />
       </div>
 
-      <div className="no-scrollbar hidden w-[320px] shrink-0 flex-col gap-4 overflow-y-auto xl:flex">
-        <ChatFriendSuggestionPanel
-          suggestions={friendSuggestions}
-          onToggleAddFriend={handleToggleAddFriend}
-          onShowAllSuggestions={handleShowAllSuggestions}
-        />
-
-        <ChatFriendActivityPanel
-          friends={onlineFriends}
-          onOpenConversation={handleOpenConversation}
-        />
-      </div>
+      {friendSidePanel}
     </div>
   );
 
@@ -728,9 +787,18 @@ export default function ChatMain({ detailPanel }: Props) {
     <ChatEmptyPanel />
   );
 
+  const newChatPanel = (
+    <ContactMain
+      onCloseNewChat={handleCloseNewChat}
+      onOpenProfileStatus={handleOpenProfileStatus}
+      sidePanel={friendSidePanel}
+    />
+  );
+
   const resolveDetailPanel = () => {
-    if (isExploreOpen && detailPanel) return detailPanel;
     if (isStatusViewerOpen) return statusPanel;
+    if (isNewChatOpen) return newChatPanel;
+    if (isExploreOpen && detailPanel) return detailPanel;
     if (activeConversation) return conversationDetailPanel;
     return conversationDetailPanel;
   };

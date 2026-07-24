@@ -9,9 +9,8 @@ import { useExploreStore } from "@/shared/lib/exploreStore";
 
 // 2. Import Types
 import type {
-  DataWetonGroup,
+  DataWetonActiveUser,
   DataWetonPerson,
-  DataWetonTopic,
   PayloadMatchWeton,
   PayloadSingleWeton,
   MatchWeton,
@@ -22,8 +21,7 @@ import type {
 import WetonPersonCard from "./wetonPersonCard";
 import WetonProfileProgressCard from "./wetonProfileProgressCard";
 import WetonSuggestionList from "./wetonSuggestionList";
-import WetonTopicList from "./wetonTopicList";
-import WetonGroupList from "./wetonGroupList";
+import WetonActiveUserList from "./wetonActiveUserList";
 import WetonMatchCard from "./wetonMatchCard";
 import WetonPagination from "./wetonPagination";
 import WetonMatchModal from "./wetonMatchModal";
@@ -266,17 +264,23 @@ const DUMMY_WETON_PEOPLE: DataWetonPerson[] = NAMES.map((name, index) => ({
   birthDate: `${((index * 7) % 28) + 1}/${((index * 5) % 12) + 1}/${1988 + (index % 20)}`,
 }));
 
-const POPULAR_TOPICS: DataWetonTopic[] = [
-  { id: "1", name: "RemoteWork", postLabel: "12.4K postingan", trend: [4, 6, 5, 8, 7, 11] },
-  { id: "2", name: "ProductDesign", postLabel: "8.7K postingan", trend: [7, 5, 6, 5, 8, 10] },
-  { id: "3", name: "CareerGrowth", postLabel: "6.1K postingan", trend: [3, 5, 4, 6, 8, 9] },
-  { id: "4", name: "StartupLife", postLabel: "5.3K postingan", trend: [6, 4, 5, 7, 6, 9] },
+const ACTIVE_STATUS_LABELS = [
+  "Aktif sekarang",
+  "Aktif 3 menit lalu",
+  "Aktif 12 menit lalu",
+  "Aktif 25 menit lalu",
+  "Aktif 1 jam lalu",
 ];
 
-const POPULAR_GROUPS: DataWetonGroup[] = [
-  { id: "1", name: "UI/UX Indonesia", memberLabel: "12.8K anggota", isJoined: false },
-  { id: "2", name: "Komunitas Weton", memberLabel: "4.2K anggota", isJoined: false },
-];
+const ACTIVE_USERS: DataWetonActiveUser[] = DUMMY_WETON_PEOPLE.slice(3, 9).map(
+  (person, index) => ({
+    id: person.id,
+    name: person.name,
+    avatarUrl: person.avatarUrl,
+    statusLabel: ACTIVE_STATUS_LABELS[index % ACTIVE_STATUS_LABELS.length],
+    isOnline: index < 3,
+  })
+);
 
 const DEFAULT_PAGE_SIZE = 10;
 
@@ -306,8 +310,6 @@ export default function WetonMain() {
   const [activeMode, setActiveMode] = useState<"people" | "match">("people");
   const [peopleSearchQuery, setPeopleSearchQuery] = useState("");
   const [isVerifiedOnly, setIsVerifiedOnly] = useState(false);
-  const [popularGroups, setPopularGroups] =
-    useState<DataWetonGroup[]>(POPULAR_GROUPS);
 
   // 9. Store / Controller
   const setExploreOpen = useExploreStore((state) => state.setExploreOpen);
@@ -361,14 +363,6 @@ export default function WetonMain() {
 
   const handleShowAllSuggestions = () => {
     notyfRef.current?.success("Halaman rekomendasi lengkap belum tersedia.");
-  };
-
-  const handleToggleJoinGroup = (groupId: string) => {
-    setPopularGroups((state) =>
-      state.map((group) =>
-        group.id === groupId ? { ...group, isJoined: !group.isJoined } : group
-      )
-    );
   };
 
   const handleCompleteProfile = () => {
@@ -803,15 +797,10 @@ export default function WetonMain() {
           onShowAllSuggestions={handleShowAllSuggestions}
         />
 
-        <WetonTopicList
-          topics={POPULAR_TOPICS}
-          onShowAllTopics={handleShowAllSuggestions}
-        />
-
-        <WetonGroupList
-          groups={popularGroups}
-          onToggleJoinGroup={handleToggleJoinGroup}
-          onShowAllGroups={handleShowAllSuggestions}
+        <WetonActiveUserList
+          users={ACTIVE_USERS}
+          onGreetPerson={handleGreetPerson}
+          onShowAllActiveUsers={handleShowAllSuggestions}
         />
       </aside>
 

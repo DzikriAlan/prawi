@@ -24,20 +24,13 @@ export interface DataWetonPerson {
   birthDate: string;
 }
 
-// Satu topik yang sedang populer
-export interface DataWetonTopic {
+// Satu pengguna yang sedang aktif
+export interface DataWetonActiveUser {
   id: string;
   name: string;
-  postLabel: string;
-  trend: number[];
-}
-
-// Satu grup yang bisa diikuti
-export interface DataWetonGroup {
-  id: string;
-  name: string;
-  memberLabel: string;
-  isJoined: boolean;
+  avatarUrl: string;
+  statusLabel: string;
+  isOnline: boolean;
 }
 
 // Satu baris hasil pencarian weton yang cocok

@@ -48,9 +48,10 @@ src/shared/
 | `delete`  |    ✅    |      ❌     |   ❌  |       ❌      |              ✅             |
 | `fetch`   |    ❌    |      ✅     |   ❌  |       ❌      |              ❌             |
 | `store`   |    ❌    |      ✅     |   ❌  |       ❌      |              ❌             |
+| `change`  |    ❌    |      ✅     |   ❌  |       ❌      |              ❌             |
 | `remove`  |    ❌    |      ✅     |   ❌  |       ❌      |              ❌             |
-| `read`    |    ❌    |      ❌     |   ✅  |       ✅      |              ❌             |
-| `create`  |    ❌    |      ❌     |   ✅  |       ✅      |              ❌             |
+| `load`    |    ❌    |      ❌     |   ✅  |       ✅      |              ❌             |
+| `submit`  |    ❌    |      ❌     |   ✅  |       ✅      |              ❌             |
 | `edit`    |    ❌    |      ❌     |   ✅  |       ✅      |              ❌             |
 | `clear`   |    ❌    |      ❌     |   ✅  |       ✅      |              ❌             |
 
@@ -284,7 +285,7 @@ export default function UsersList({ userId }: Props) {
   // Computed / Derive (dont write commentar)d
   const isEmptyData = !usersProfile.data
   // Methods / Handler (dont write commentar)s
-  const handleSubmit = () => {}
+  const submit = () => {}
   // Effects
   useEffect(() => {}, [])
 
@@ -382,10 +383,10 @@ const form = useForm<FormValues>({
 - Function utilitas tidak boleh berada di luar parent function.
 - Penamaan callback props menggunakan rumus `(action + subject)`:
   ```tsx
-  onCreateUser={handleCreateUser}
-  onUpdateUser={handleUpdateUser}
-  onDeleteUser={handleDeleteUser}
+  onSubmitUser={submitUser}
+  onEditUser={editUser}
+  onClearUser={clearUser}
 
-  onOpenModal={handleOpenModal}
-  onCloseModal={handleCloseModal}
+  onLoadModal={loadModal}
+  onClearModal={clearModal}
   ```

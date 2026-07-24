@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { CircleUserRound, MessageCircle, Search } from "lucide-react";
+import { CircleDashed, CircleUserRound, MessageCircle, Search } from "lucide-react";
 
 import { cn } from "@/shared/lib/utils";
 import { useExploreStore } from "@/shared/lib/exploreStore";
@@ -16,6 +16,7 @@ export const AppNavigation: React.FC = () => {
   const isExploreOpen = useExploreStore((state) => state.isExploreOpen);
   const toggleExplore = useExploreStore((state) => state.toggleExplore);
   const isImmersive = useExploreStore((state) => state.isImmersive);
+  const requestStatusFeed = useExploreStore((state) => state.requestStatusFeed);
 
   // 3. State
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
@@ -27,6 +28,10 @@ export const AppNavigation: React.FC = () => {
 
   const handleToggleExplore = () => {
     toggleExplore();
+  };
+
+  const handleOpenStatusFeed = () => {
+    requestStatusFeed();
   };
 
   const renderRailItems = () =>
@@ -78,6 +83,16 @@ export const AppNavigation: React.FC = () => {
 
         <button
           type="button"
+          onClick={handleOpenStatusFeed}
+          aria-label="Status"
+          title="Status"
+          className="flex h-11 w-11 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          <CircleDashed className="h-5 w-5" />
+        </button>
+
+        <button
+          type="button"
           onClick={handleToggleExplore}
           aria-label="Cari orang"
           title="Cari orang"
@@ -109,6 +124,16 @@ export const AppNavigation: React.FC = () => {
         )}
       >
         {renderBottomItems()}
+
+        <button
+          type="button"
+          onClick={handleOpenStatusFeed}
+          aria-label="Status"
+          className="flex flex-1 flex-col items-center justify-center gap-1 py-1.5 text-[10px] font-medium text-muted-foreground transition-colors"
+        >
+          <CircleDashed className="h-[22px] w-[22px]" />
+          Status
+        </button>
 
         <button
           type="button"
