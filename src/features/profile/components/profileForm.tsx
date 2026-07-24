@@ -27,6 +27,8 @@ const PURPOSE_OPTIONS = [
 
 const ACTIVITY_LEVEL_OPTIONS = ["Sangat Aktif", "Aktif", "Jarang Aktif"];
 
+const BIO_MAX_LENGTH = 150;
+
 // 7. Props
 interface Props {
   payload: PayloadStoreProfile;
@@ -36,6 +38,9 @@ interface Props {
 export default function ProfileForm({ payload, onChangePayload }: Props) {
   const bannerInputRef = useRef<HTMLInputElement>(null);
   const avatarInputRef = useRef<HTMLInputElement>(null);
+
+  // 10. Computed / Derived
+  const bioLengthLabel = `${payload.bio.length}/${BIO_MAX_LENGTH}`;
 
   // 11. Methods / Handlers
   const handlePickBannerImage = () => {
@@ -183,11 +188,16 @@ export default function ProfileForm({ payload, onChangePayload }: Props) {
         <Label htmlFor="bio">Tentang Saya</Label>
         <Textarea
           id="bio"
-          className="min-h-20 sm:min-h-16"
+          className="min-h-20 resize-none sm:min-h-16"
           placeholder="Ceritakan sedikit tentang diri Anda"
+          maxLength={BIO_MAX_LENGTH}
           value={payload.bio}
           onChange={(event) => onChangePayload({ bio: event.target.value })}
         />
+
+        <span className="self-end text-xs text-muted-foreground">
+          {bioLengthLabel}
+        </span>
       </div>
 
       <div className="flex flex-col gap-2">

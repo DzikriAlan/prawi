@@ -26,6 +26,9 @@ interface Props {
 
 type ContactProfileTab = "posts" | "tagged";
 
+const BIO_PREVIEW_LINE_COUNT = 2;
+const BIO_PREVIEW_CHAR_COUNT = 90;
+
 export default function ContactProfile({
   profile,
   onBack,
@@ -36,6 +39,7 @@ export default function ContactProfile({
   // 8. State
   const [isFollowing, setIsFollowing] = useState(true);
   const [activeTab, setActiveTab] = useState<ContactProfileTab>("posts");
+  const [isBioExpanded, setIsBioExpanded] = useState(false);
 
   // 10. Computed / Derived
   const stats = [
@@ -49,6 +53,10 @@ export default function ContactProfile({
   ];
   const isPostsTab = activeTab === "posts";
   const isEmptyPosts = profile.posts.length === 0;
+  const isBioClamped =
+    profile.bio.split("\n").length > BIO_PREVIEW_LINE_COUNT ||
+    profile.bio.length > BIO_PREVIEW_CHAR_COUNT;
+  const bioToggleLabel = isBioExpanded ? "lebih sedikit" : "selengkapnya";
 
   // 11. Methods / Handlers
   function formatCount(count: number) {
@@ -63,6 +71,10 @@ export default function ContactProfile({
 
   const handleMessageContact = () => {
     onMessageContact(profile.id);
+  };
+
+  const handleToggleBio = () => {
+    setIsBioExpanded((state) => !state);
   };
 
   const renderPost = (post: DataContactPost) => (
@@ -143,9 +155,25 @@ export default function ContactProfile({
           <span className="text-[15px] font-semibold text-foreground">
             {profile.name}
           </span>
-          <p className="whitespace-pre-line break-words text-[13px] leading-relaxed text-foreground/90">
+          <p
+            className={cn(
+              "whitespace-pre-line break-words text-[13px] leading-relaxed text-foreground/90",
+              !isBioExpanded && "line-clamp-2"
+            )}
+          >
             {profile.bio}
           </p>
+
+          {isBioClamped && (
+            <button
+              type="button"
+              onClick={handleToggleBio}
+              aria-expanded={isBioExpanded}
+              className="self-start text-[13px] font-semibold text-muted-foreground transition-colors hover:text-foreground"
+            >
+              {bioToggleLabel}
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-2 px-4 pt-4 sm:px-6">
@@ -193,7 +221,7 @@ export default function ContactProfile({
         </div>
 
         {isPostsTab ? (
-          <div className="grid grid-cols-3 gap-0.5 pb-[calc(2rem+env(safe-area-inset-bottom))]">
+          <div className="grid grid-cols-3 gap-0.5 pb-[env(safe-area-inset-bottom)]">
             {profile.posts.map((post) => renderPost(post))}
 
             {isEmptyPosts && (
