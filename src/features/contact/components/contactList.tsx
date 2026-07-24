@@ -7,6 +7,7 @@ import {
   UserPlus,
   Users,
   UsersRound,
+  X,
 } from "lucide-react";
 
 // 2. Import Types
@@ -45,6 +46,7 @@ export default function ContactList({
   const groupedContacts = getGroupedContacts();
   const isEmptyContact = groupedContacts.length === 0;
   const contactCountLabel = `${contacts.length} kontak`;
+  const hasSearchKeyword = searchKeyword.length > 0;
 
   const quickActions = [
     { id: "group", label: "Grup baru", icon: Users, onClick: onCreateGroup },
@@ -58,6 +60,10 @@ export default function ContactList({
   ];
 
   // 11. Methods / Handlers
+  const handleClearSearchKeyword = () => {
+    onChangeSearchKeyword("");
+  };
+
   function getGroupedContacts() {
     const keyword = searchKeyword.trim().toLowerCase();
 
@@ -124,9 +130,25 @@ export default function ContactList({
             type="text"
             value={searchKeyword}
             placeholder="Cari nama atau nomor"
+            inputMode="search"
+            enterKeyHint="search"
+            autoComplete="off"
+            autoCorrect="off"
+            spellCheck={false}
             onChange={(event) => onChangeSearchKeyword(event.target.value)}
             className="h-full min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground md:text-sm"
           />
+
+          {hasSearchKeyword && (
+            <button
+              type="button"
+              onClick={handleClearSearchKeyword}
+              aria-label="Hapus pencarian"
+              className="-mr-2 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted active:bg-muted"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -179,7 +201,7 @@ export default function ContactList({
       <div className="flex shrink-0 flex-col pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
         {groupedContacts.map((section) => (
           <div key={section.letter} className="flex flex-col">
-            <span className="px-4 pb-1 pt-4 text-[13px] font-semibold text-muted-foreground sm:px-5">
+            <span className="sticky top-0 z-10 bg-background/95 px-4 pb-1 pt-4 text-[13px] font-semibold text-muted-foreground backdrop-blur sm:px-5">
               {section.letter}
             </span>
 
@@ -194,9 +216,19 @@ export default function ContactList({
         ))}
 
         {isEmptyContact && (
-          <p className="px-5 py-8 text-center text-sm text-muted-foreground">
-            Tidak ada kontak yang cocok dengan pencarian.
-          </p>
+          <div className="flex flex-col items-center gap-2 px-6 py-14 text-center">
+            <span className="flex h-12 w-12 items-center justify-center rounded-full bg-muted text-muted-foreground">
+              <Search className="h-5 w-5" />
+            </span>
+
+            <span className="text-[15px] font-semibold text-foreground">
+              Kontak tidak ditemukan
+            </span>
+
+            <span className="text-[13px] text-muted-foreground">
+              Coba cari dengan nama atau nomor yang lain.
+            </span>
+          </div>
         )}
       </div>
     </div>

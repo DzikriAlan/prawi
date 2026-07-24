@@ -71,7 +71,7 @@ export default function ContactProfile({
       type="button"
       onClick={() => onOpenPost(post.id)}
       aria-label="Buka postingan"
-      className="relative aspect-square bg-muted transition-opacity hover:opacity-90"
+      className="relative aspect-square bg-muted transition-opacity hover:opacity-90 active:opacity-75"
     >
       <Image
         src={post.imageUrl}
@@ -89,7 +89,7 @@ export default function ContactProfile({
 
   return (
     <div className="no-scrollbar flex h-full w-full flex-col overflow-y-auto overscroll-contain bg-background">
-      <div className="sticky top-0 z-10 flex shrink-0 items-center gap-2 border-b bg-background/95 px-4 py-2.5 pt-[calc(0.625rem+env(safe-area-inset-top))] backdrop-blur sm:gap-3 sm:px-5 sm:py-3.5 md:pt-3.5">
+      <div className="sticky top-0 z-20 flex h-[calc(3.5rem+env(safe-area-inset-top))] shrink-0 items-center gap-2 border-b bg-background/95 px-4 pt-[env(safe-area-inset-top)] backdrop-blur sm:h-16 sm:gap-3 sm:px-5 sm:pt-0">
         <button
           type="button"
           onClick={onBack}
@@ -143,7 +143,7 @@ export default function ContactProfile({
           <span className="text-[15px] font-semibold text-foreground">
             {profile.name}
           </span>
-          <p className="whitespace-pre-line text-[13px] leading-relaxed text-foreground/90">
+          <p className="whitespace-pre-line break-words text-[13px] leading-relaxed text-foreground/90">
             {profile.bio}
           </p>
         </div>
@@ -156,8 +156,8 @@ export default function ContactProfile({
             className={cn(
               "h-10 flex-1 rounded-lg text-[13px] font-semibold transition-colors sm:h-9",
               isFollowing
-                ? "bg-muted text-foreground hover:bg-muted/70"
-                : "bg-primary text-primary-foreground hover:opacity-90"
+                ? "bg-muted text-foreground hover:bg-muted/70 active:bg-muted/50"
+                : "bg-primary text-primary-foreground hover:opacity-90 active:opacity-80"
             )}
           >
             {isFollowing ? "Mengikuti" : "Ikuti"}
@@ -166,13 +166,13 @@ export default function ContactProfile({
           <button
             type="button"
             onClick={handleMessageContact}
-            className="h-10 flex-1 rounded-lg bg-muted text-[13px] font-semibold text-foreground transition-colors hover:bg-muted/70 sm:h-9"
+            className="h-10 flex-1 rounded-lg bg-muted text-[13px] font-semibold text-foreground transition-colors hover:bg-muted/70 active:bg-muted/50 sm:h-9"
           >
             Pesan
           </button>
         </div>
 
-        <div className="mt-5 grid shrink-0 grid-cols-2 border-b">
+        <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-10 mt-5 grid shrink-0 grid-cols-2 border-b bg-background sm:top-16">
           {tabs.map((tab) => (
             <button
               key={tab.id}
