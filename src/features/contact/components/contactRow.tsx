@@ -27,7 +27,7 @@ export default function ContactRow({ contact, onOpenContact }: Props) {
     <button
       type="button"
       onClick={handleOpenContact}
-      className="flex w-full items-center gap-3.5 px-4 py-2.5 text-left transition-colors hover:bg-muted/60 sm:px-5"
+      className="flex w-full items-center gap-3.5 px-4 py-2.5 text-left transition-colors hover:bg-muted/60 active:bg-muted sm:px-5"
     >
       <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full">
         <Image

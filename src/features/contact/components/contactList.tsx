@@ -89,18 +89,18 @@ export default function ContactList({
 
   return (
     <div className="no-scrollbar flex h-full w-full flex-col overflow-y-auto overscroll-contain bg-background">
-      <div className="flex shrink-0 items-center gap-3 px-4 pb-4 pt-6 sm:px-5">
+      <div className="flex shrink-0 items-center gap-2 px-4 pb-4 pt-[calc(1.5rem+env(safe-area-inset-top))] sm:gap-3 sm:px-5 md:pt-6">
         <button
           type="button"
           onClick={onCloseNewChat}
           aria-label="Kembali ke obrolan"
-          className="-ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted"
+          className="-ml-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted sm:-ml-1 sm:h-9 sm:w-9"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
 
         <div className="flex min-w-0 flex-1 flex-col">
-          <h1 className="text-[19px] font-bold leading-none tracking-tight text-foreground">
+          <h1 className="truncate text-[17px] font-bold leading-tight tracking-tight text-foreground sm:text-[19px]">
             Obrolan baru
           </h1>
           <p className="text-xs text-muted-foreground">{contactCountLabel}</p>
@@ -110,7 +110,7 @@ export default function ContactList({
           type="button"
           onClick={onOpenMoreOptions}
           aria-label="Opsi lainnya"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted"
+          className="-mr-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted sm:mr-0 sm:h-9 sm:w-9"
         >
           <LayoutGrid className="h-5 w-5" />
         </button>
@@ -125,7 +125,7 @@ export default function ContactList({
             value={searchKeyword}
             placeholder="Cari nama atau nomor"
             onChange={(event) => onChangeSearchKeyword(event.target.value)}
-            className="h-full flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
+            className="h-full min-w-0 flex-1 bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground md:text-sm"
           />
         </div>
       </div>
@@ -136,13 +136,13 @@ export default function ContactList({
             key={action.id}
             type="button"
             onClick={action.onClick}
-            className="flex w-full items-center gap-3.5 px-4 py-2.5 text-left transition-colors hover:bg-muted/60 sm:px-5"
+            className="flex w-full items-center gap-3.5 px-4 py-2.5 text-left transition-colors hover:bg-muted/60 active:bg-muted sm:px-5"
           >
             <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
               <action.icon className="h-5 w-5" />
             </span>
 
-            <span className="text-[15px] font-semibold text-foreground">
+            <span className="truncate text-[15px] font-semibold text-foreground">
               {action.label}
             </span>
           </button>
@@ -153,7 +153,7 @@ export default function ContactList({
         <button
           type="button"
           onClick={() => onOpenContact(self.id)}
-          className="flex w-full items-center gap-3.5 px-4 py-2.5 text-left transition-colors hover:bg-muted/60 sm:px-5"
+          className="flex w-full items-center gap-3.5 px-4 py-2.5 text-left transition-colors hover:bg-muted/60 active:bg-muted sm:px-5"
         >
           <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full">
             <Image
@@ -176,7 +176,7 @@ export default function ContactList({
         </button>
       </div>
 
-      <div className="flex shrink-0 flex-col pb-6">
+      <div className="flex shrink-0 flex-col pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
         {groupedContacts.map((section) => (
           <div key={section.letter} className="flex flex-col">
             <span className="px-4 pb-1 pt-4 text-[13px] font-semibold text-muted-foreground sm:px-5">

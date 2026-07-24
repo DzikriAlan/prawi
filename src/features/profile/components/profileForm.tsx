@@ -117,6 +117,7 @@ export default function ProfileForm({ payload, onChangePayload }: Props) {
         <Label htmlFor="birthDate">Tanggal Lahir</Label>
         <Input
           id="birthDate"
+          className="h-11 sm:h-9"
           type="text"
           inputMode="numeric"
           placeholder="dd/mm/yyyy"
@@ -134,7 +135,7 @@ export default function ProfileForm({ payload, onChangePayload }: Props) {
           value={payload.purpose}
           onValueChange={(value) => onChangePayload({ purpose: value })}
         >
-          <SelectTrigger id="purpose">
+          <SelectTrigger id="purpose" className="h-11 sm:h-9">
             <SelectValue placeholder="Pilih tujuan" />
           </SelectTrigger>
           <SelectContent>
@@ -154,6 +155,7 @@ export default function ProfileForm({ payload, onChangePayload }: Props) {
         <Label htmlFor="interests">Minat</Label>
         <Input
           id="interests"
+          className="h-11 sm:h-9"
           type="text"
           placeholder="Contoh: fotografi, traveling, kuliner"
           value={payload.interests}
@@ -167,6 +169,7 @@ export default function ProfileForm({ payload, onChangePayload }: Props) {
         <Label htmlFor="location">Domisili</Label>
         <Input
           id="location"
+          className="h-11 sm:h-9"
           type="text"
           placeholder="Contoh: Bandung, Jawa Barat"
           value={payload.location}
@@ -180,6 +183,7 @@ export default function ProfileForm({ payload, onChangePayload }: Props) {
         <Label htmlFor="bio">Tentang Saya</Label>
         <Textarea
           id="bio"
+          className="min-h-20 sm:min-h-16"
           placeholder="Ceritakan sedikit tentang diri Anda"
           value={payload.bio}
           onChange={(event) => onChangePayload({ bio: event.target.value })}
@@ -192,7 +196,7 @@ export default function ProfileForm({ payload, onChangePayload }: Props) {
           value={payload.activityLevel}
           onValueChange={(value) => onChangePayload({ activityLevel: value })}
         >
-          <SelectTrigger id="activityLevel">
+          <SelectTrigger id="activityLevel" className="h-11 sm:h-9">
             <SelectValue placeholder="Pilih status aktivitas" />
           </SelectTrigger>
           <SelectContent>

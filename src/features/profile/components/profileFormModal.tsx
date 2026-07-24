@@ -90,27 +90,28 @@ export default function ProfileFormModal({ open, onOpenChange }: Props) {
     <Modal
       open={open}
       onOpenChange={onOpenChange}
+      className="left-0 top-0 h-[100dvh] max-h-[100dvh] w-full max-w-none translate-x-0 translate-y-0 rounded-none border-0 pt-[env(safe-area-inset-top)] sm:pt-0 data-[state=closed]:animate-none data-[state=open]:animate-none sm:left-[50%] sm:top-[50%] sm:h-auto sm:max-h-[85vh] sm:w-[calc(100%-2rem)] sm:max-w-lg sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-lg sm:border sm:data-[state=closed]:animate-out sm:data-[state=open]:animate-in"
     >
       <form
         className="flex min-h-0 flex-1 flex-col"
         onSubmit={handleSubmit}
       >
-        <ModalHeader>
+        <ModalHeader className="px-4 sm:px-6">
           <ModalTitle>Lengkapi Profil</ModalTitle>
         </ModalHeader>
 
-        <ModalContent>
+        <ModalContent className="px-4 sm:px-6">
           <ProfileForm
             payload={payload}
             onChangePayload={handleChangePayload}
           />
         </ModalContent>
 
-        <ModalFooter>
+        <ModalFooter className="px-4 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:px-6 sm:pb-4">
           <Button
             type="submit"
             disabled={isSubmitDisabled}
-            className="w-full"
+            className="h-11 w-full sm:h-9"
           >
             {loading ? "Menyimpan..." : "Simpan Profil"}
           </Button>

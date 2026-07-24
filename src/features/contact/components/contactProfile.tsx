@@ -89,17 +89,17 @@ export default function ContactProfile({
 
   return (
     <div className="no-scrollbar flex h-full w-full flex-col overflow-y-auto overscroll-contain bg-background">
-      <div className="sticky top-0 z-10 flex shrink-0 items-center gap-3 border-b bg-background/95 px-4 py-3.5 backdrop-blur sm:px-5">
+      <div className="sticky top-0 z-10 flex shrink-0 items-center gap-2 border-b bg-background/95 px-4 py-2.5 pt-[calc(0.625rem+env(safe-area-inset-top))] backdrop-blur sm:gap-3 sm:px-5 sm:py-3.5 md:pt-3.5">
         <button
           type="button"
           onClick={onBack}
           aria-label="Kembali ke daftar kontak"
-          className="-ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted"
+          className="-ml-2 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted sm:-ml-1 sm:h-9 sm:w-9"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
 
-        <span className="min-w-0 flex-1 truncate text-[17px] font-semibold text-foreground">
+        <span className="min-w-0 flex-1 truncate text-[15px] font-semibold text-foreground sm:text-[17px]">
           {profile.username}
         </span>
 
@@ -107,31 +107,31 @@ export default function ContactProfile({
           type="button"
           onClick={onOpenMoreOptions}
           aria-label="Opsi lainnya"
-          className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted"
+          className="-mr-1 flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-foreground transition-colors hover:bg-muted sm:mr-0 sm:h-9 sm:w-9"
         >
           <MoreHorizontal className="h-5 w-5" />
         </button>
       </div>
 
       <div className="mx-auto w-full max-w-2xl">
-        <div className="flex items-center gap-6 px-4 pt-5 sm:gap-8 sm:px-6">
-          <div className="relative h-[88px] w-[88px] shrink-0 overflow-hidden rounded-full sm:h-24 sm:w-24">
+        <div className="flex items-center gap-4 px-4 pt-5 sm:gap-8 sm:px-6">
+          <div className="relative h-[72px] w-[72px] shrink-0 overflow-hidden rounded-full sm:h-24 sm:w-24">
             <Image
               src={profile.avatarUrl}
               alt={profile.name}
               fill
-              sizes="96px"
+              sizes="(max-width: 640px) 72px, 96px"
               className="object-cover"
             />
           </div>
 
-          <div className="grid flex-1 grid-cols-3 gap-1">
+          <div className="grid min-w-0 flex-1 grid-cols-3 gap-1">
             {stats.map((stat) => (
-              <div key={stat.id} className="flex flex-col items-center text-center">
-                <span className="text-lg font-bold leading-tight text-foreground">
+              <div key={stat.id} className="flex min-w-0 flex-col items-center text-center">
+                <span className="text-base font-bold leading-tight text-foreground sm:text-lg">
                   {stat.value}
                 </span>
-                <span className="text-[13px] text-muted-foreground">
+                <span className="truncate text-[11px] text-muted-foreground sm:text-[13px]">
                   {stat.label}
                 </span>
               </div>
@@ -154,7 +154,7 @@ export default function ContactProfile({
             onClick={handleToggleFollow}
             aria-pressed={isFollowing}
             className={cn(
-              "h-9 flex-1 rounded-lg text-[13px] font-semibold transition-colors",
+              "h-10 flex-1 rounded-lg text-[13px] font-semibold transition-colors sm:h-9",
               isFollowing
                 ? "bg-muted text-foreground hover:bg-muted/70"
                 : "bg-primary text-primary-foreground hover:opacity-90"
@@ -166,7 +166,7 @@ export default function ContactProfile({
           <button
             type="button"
             onClick={handleMessageContact}
-            className="h-9 flex-1 rounded-lg bg-muted text-[13px] font-semibold text-foreground transition-colors hover:bg-muted/70"
+            className="h-10 flex-1 rounded-lg bg-muted text-[13px] font-semibold text-foreground transition-colors hover:bg-muted/70 sm:h-9"
           >
             Pesan
           </button>
@@ -181,7 +181,7 @@ export default function ContactProfile({
               aria-label={tab.id === "posts" ? "Postingan" : "Ditandai"}
               aria-selected={activeTab === tab.id}
               className={cn(
-                "flex items-center justify-center border-b-2 py-2.5 transition-colors",
+                "flex items-center justify-center border-b-2 py-3 transition-colors sm:py-2.5",
                 activeTab === tab.id
                   ? "border-foreground text-foreground"
                   : "border-transparent text-muted-foreground hover:text-foreground"
@@ -193,7 +193,7 @@ export default function ContactProfile({
         </div>
 
         {isPostsTab ? (
-          <div className="grid grid-cols-3 gap-0.5 pb-8">
+          <div className="grid grid-cols-3 gap-0.5 pb-[calc(2rem+env(safe-area-inset-bottom))]">
             {profile.posts.map((post) => renderPost(post))}
 
             {isEmptyPosts && (
@@ -203,7 +203,7 @@ export default function ContactProfile({
             )}
           </div>
         ) : (
-          <p className="py-12 text-center text-sm text-muted-foreground">
+          <p className="px-6 py-12 pb-[calc(3rem+env(safe-area-inset-bottom))] text-center text-sm text-muted-foreground">
             Belum ada postingan yang menandai {profile.name}.
           </p>
         )}
